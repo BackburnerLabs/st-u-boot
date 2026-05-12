@@ -1,5 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0+
 
+DEVICE_TREE_EXT ?=
+
+ifneq ($(DEVICE_TREE_EXT),)
+dtb-y += $(DEVICE_TREE_EXT)
+endif
+
 dtb-$(CONFIG_TARGET_SMARTWEB) += at91sam9260-smartweb.dtb
 dtb-$(CONFIG_TARGET_TAURUS) += at91sam9g20-taurus.dtb
 dtb-$(CONFIG_TARGET_CORVUS) += at91sam9g45-corvus.dtb
@@ -1318,7 +1324,9 @@ dtb-$(CONFIG_STM32MP23X) += \
 
 dtb-$(CONFIG_STM32MP25X) += \
 	stm32mp257f-dk.dtb \
-	stm32mp257f-ev1.dtb
+    myb-stm32mp257x-2GB.dtb \
+	stm32mp257f-ev1.dtb \
+	myb-stm32mp257x-1GB.dtb 
 
 dtb-$(CONFIG_SOC_K3_AM654) += \
 	k3-am654-base-board.dtb \

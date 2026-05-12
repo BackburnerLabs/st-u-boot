@@ -25,6 +25,12 @@
 		multiple-images;
 	};
 
+	firmware {
+		optee {
+			bootph-all;
+		};
+	};
+
 	soc {
 		ddr: ddr@5a003000 {
 			bootph-all;

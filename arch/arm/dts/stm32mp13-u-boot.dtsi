@@ -29,5 +29,12 @@
 
 			status = "okay";
 		};
+
+		etzpc: bus@5c007000 {
+			/* pre-reloc probe = reserve video frame buffer in video_reserve() */
+			display-controller@5a001000 {
+				bootph-some-ram;
+			};
+		};
 	};
 };
