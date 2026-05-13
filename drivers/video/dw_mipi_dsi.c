@@ -623,62 +623,6 @@ static int dw_mipi_dsi_video_get_panel(struct udevice *dev, struct udevice **pan
 	return ret;
 }
 
-static int dw_mipi_dsi_video_get_panel(struct udevice *dev, struct udevice **panel)
-{
-	ofnode ep_node, node, ports, remote;
-	u32 remote_phandle;
-	int ret;
-
-	ports = ofnode_find_subnode(dev_ofnode(dev), "ports");
-	if (!ofnode_valid(ports)) {
-		dev_dbg(dev, "Remote bridge subnode\n");
-		return ret;
-	}
-
-	for (node = ofnode_first_subnode(ports);
-	     ofnode_valid(node);
-	     node = dev_read_next_subnode(node)) {
-		ep_node = ofnode_first_subnode(node);
-		if (!ofnode_valid(ep_node))
-			continue;
-
-		ret = ofnode_read_u32(ep_node, "remote-endpoint", &remote_phandle);
-		if (ret) {
-			dev_dbg(dev, "%s(%s): Could not find remote-endpoint property\n",
-				__func__, dev_read_name(dev));
-			return ret;
-		}
-
-		remote = ofnode_get_by_phandle(remote_phandle);
-		if (!ofnode_valid(remote)) {
-			dev_dbg(dev, "%s(%s): Remote is not valid\n", __func__, dev_read_name(dev));
-			return -EINVAL;
-		}
-
-		while (ofnode_valid(remote)) {
-			remote = ofnode_get_parent(remote);
-			if (!ofnode_valid(remote)) {
-				dev_dbg(dev, "%s(%s): no UCLASS_DISPLAY for remote-endpoint\n",
-					__func__, dev_read_name(dev));
-				continue;
-			}
-
-			uclass_get_device_by_ofnode(UCLASS_PANEL, remote, panel);
-			if (*panel)
-				break;
-		}
-	}
-
-	/* Sanity check, we can get out of the loop without having a clean ofnode */
-	if (!(*panel))
-		ret = -EINVAL;
-	else
-		if (!ofnode_valid(dev_ofnode(*panel)))
-			ret = -EINVAL;
-
-	return ret;
-}
-
 static void dw_mipi_dsi_video_packet_config(struct dw_mipi_dsi *dsi,
 					    struct display_timing *timings)
 {
